@@ -1,5 +1,6 @@
-import FormLogin from "./pages/Login"
 import { useState } from 'react';
+
+import Login from "./pages/Login"
 
 function App() {
   const [auth, setAuth] = useState({
@@ -20,9 +21,10 @@ function App() {
     .then(response => response.json())
     .then(response => {
       const { token } = response;
-      const { name, username, email, phone } = response.user; 
 
       if (token != null) {
+        const { name, username, email, phone } = response.user; 
+
         setAuth({
           ...auth,
           name,
@@ -64,7 +66,7 @@ function App() {
           <button onClick={handleLogout}>Logout</button>
         </div>
       ) : (
-        <FormLogin handleLogin={handleLogin} error={error} />
+        <Login handleLogin={handleLogin} error={error} />
       )}
     </div>
   );
