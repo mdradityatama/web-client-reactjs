@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 
 import { loginUserAPI } from '../config/redux/action';
 
-import "./Login.css"
+import "./Login.css";
 
 class Login extends Component {
   state = {
@@ -34,9 +34,7 @@ class Login extends Component {
     const { history } = this.props;
 
     try {
-      const response = await this.props.loginAPI({username, password});
-      
-      localStorage.setItem("currentUser", JSON.stringify(response));
+      await this.props.loginAPI({username, password});
 
       this.setState({
         username: "",
@@ -55,7 +53,7 @@ class Login extends Component {
     const {username, password, error} = this.state;
 
     return (
-      <div className="container">
+      <div className="container-unauth">
         <div className="form-login">
           <h2 className="text-center">Login</h2>
           <Form onSubmit={this.handleSubmit}>

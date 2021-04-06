@@ -1,3 +1,44 @@
+export const isAuthentication = (data) => (dispatch) => {
+  return new Promise((resolve, reject) => {
+    fetch('http://localhost:8000/api/claims', {
+      method: 'POST',
+      headers: {
+        'Authorization' : `Bearer ${data}`
+      }
+    })
+    .then(response => response.json())
+    .then(response => {
+      if (typeof response === 'object') {
+        const dataUser = {
+          name: response.name,
+          username: response.username,
+          email: response.email,
+          phone: response.phone,
+          token: data
+        }
+
+        dispatch({
+          type: "CHANGE_USER",
+          value: dataUser,
+        })
+
+        dispatch({
+          type: "CHANGE_ISLOGIN",
+          value: true,
+        })        
+
+        localStorage.setItem('currentUser', JSON.stringify(dataUser));
+        
+        resolve(dataUser);
+      }
+      else {
+        reject(response);
+      }
+    })
+    .catch(error => console.warn(error))
+  })
+}
+
 export const loginUserAPI = (data) => (dispatch) => {
   return new Promise((resolve, reject) => {
     fetch('http://localhost:8000/api/login', {
@@ -7,12 +48,14 @@ export const loginUserAPI = (data) => (dispatch) => {
     .then(response => response.json())
     .then(response => {
       if (response.succeeded) {
+        const { data } = response;
+        
         const dataUser = {
-          name: response?.user.name,
-          username: response?.user.username,
-          email: response?.user.email,
-          phone: response?.user.phone,
-          token: response?.token
+          name: data.user.name,
+          username: data.user.username,
+          email: data.user.email,
+          phone: data.user.phone,
+          token: data.token
         }
   
         dispatch({
@@ -24,40 +67,14 @@ export const loginUserAPI = (data) => (dispatch) => {
           type: "CHANGE_USER",
           value: dataUser,
         });
-  
-        resolve(response);
+
+        localStorage.setItem('currentUser', JSON.stringify(dataUser));
+
+        resolve(dataUser);
       }
       else {
         reject(response.message)
       }
-
-
-      // if (token != null) {
-      //   const { name, username, email, phone } = response.user; 
-
-      //   setUser({
-      //     ...user,
-      //     auth: true,
-      //     name,
-      //     username,
-      //     email,
-      //     phone,
-      //     token
-      //   })
-
-      //   localStorage.setItem('currentUser', JSON.stringify({
-      //     auth: true,
-      //     name,
-      //     username,
-      //     email,
-      //     phone,
-      //     token
-      //   }));
-      // }
-      // else {
-      //   setError(response);
-      // }
-
     })
     .catch(error => console.log(error))
   });

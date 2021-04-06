@@ -31,7 +31,6 @@ class Register extends Component {
   handleSubmit = async e =>  {
     e.preventDefault()
     const {name, username, password} = this.state;
-    const { history } = this.props;
 
     try {
       const response = await this.props.registerUserAPI({name, username, password});
@@ -52,7 +51,7 @@ class Register extends Component {
     const {name, username, password, message, error} = this.state;
 
     return(
-      <div className="container">
+      <div className="container-unauth">
         <div className="form-login">
           <h2 className="text-center">Register</h2>
 
