@@ -1,17 +1,17 @@
-import React, { Component } from "react";
-import { Form, Button, Alert } from 'react-bootstrap';
+import { Component } from "react";
 import { connect } from "react-redux";
+import { Form, Button, Alert } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 
-import { loginUserAPI } from '../config/redux/action';
+import { registerUserAPI } from '../config/redux/action';
 
-import "./Login.css"
-
-class Login extends Component {
+class Register extends Component {
   state = {
+    name: "",
     username: "",
     password: "",
-    error: ""
+    message: "",
+    error: null
   }
 
   componentDidMount() {
@@ -30,39 +30,56 @@ class Login extends Component {
 
   handleSubmit = async e =>  {
     e.preventDefault()
-    const {username, password} = this.state;
+    const {name, username, password} = this.state;
     const { history } = this.props;
 
     try {
-      const response = await this.props.loginAPI({username, password});
-      
-      localStorage.setItem("currentUser", JSON.stringify(response));
+      const response = await this.props.registerUserAPI({name, username, password});
 
       this.setState({
+        name: "",
         username: "",
         password: ""
       })
 
-      history.push('/');
+      setTimeout(() => this.setState({message: response}), 3000);
     } catch (error) {
-      this.setState({ error });
-
-      setTimeout(() => this.setState({error : ""}), 3000);
+      this.setState({error: Object.values(error.message)});
     }
   }
 
   render() {
-    const {username, password, error} = this.state;
+    const {name, username, password, message, error} = this.state;
 
-    return (
+    return(
       <div className="container">
         <div className="form-login">
-          <h2 className="text-center">Login</h2>
+          <h2 className="text-center">Register</h2>
+
+          { message !== "" ? (
+              <Alert variant={'success'}> {message} </Alert>
+            ) : "" }
+
+          { error !== null ? (
+              <Alert variant={'danger'}> {error.map(value => (
+                <ul>
+                  <li>{value}</li>
+                </ul>
+              ))} </Alert>
+            ) : "" }
+
           <Form onSubmit={this.handleSubmit}>
 
-            { error !== "" ? (
-              <Alert variant={'danger'}> {error} </Alert>
-            ) : ""}
+            <Form.Group controlId="name">
+              <Form.Label>Name</Form.Label>
+              <Form.Control 
+                name="name"
+                type="text" 
+                placeholder="Name" 
+                onChange={this.handleInputChange}
+                value={name}
+                />
+            </Form.Group>
 
             <Form.Group controlId="username">
               <Form.Label>Username</Form.Label>
@@ -95,7 +112,7 @@ class Login extends Component {
           <hr />
 
           <div className="register">
-            <Link to="/register">Register</Link>
+            <Link to="/login">Login</Link>
           </div>
 
         </div>
@@ -105,12 +122,11 @@ class Login extends Component {
 }
 
 const reduxState = (state) => ({
-  isLoading: state.isLoading,
-  isLogin: state.isLogin
+  isLoading: state.isLoading
 });
 
 const reduxDispatch = (dispatch) => ({
-  loginAPI: (data) => dispatch(loginUserAPI(data)),
+  registerUserAPI: (data) => dispatch(registerUserAPI(data)),
 });
 
-export default connect(reduxState, reduxDispatch)(Login);
+export default connect(reduxState, reduxDispatch)(Register);

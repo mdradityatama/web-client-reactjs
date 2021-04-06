@@ -12,4 +12,10 @@
   border: 1px solid #eaeaea;
   border-radius: 5px;
   padding: 10px;
+  margin-bottom: 10px;
+}
+
+.register {
+  text-align: center;
+  padding: 10px;
 }
