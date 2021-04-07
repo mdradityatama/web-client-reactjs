@@ -98,3 +98,35 @@ export const registerUserAPI = (data) => (dispatch) => {
     .catch(error => console.log(error))
   });
 };
+
+export const getProductsAPI = (token) => (dispatch) => {
+  return new Promise((resolve, reject) => {
+    fetch('http://localhost:8000/api/products', {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    })
+    .then(response => response.json())
+    .then(response => {
+      resolve(response)
+    })
+    .catch(error => console.log(error))
+  });
+};
+
+export const getOrderByUserAPI = (token) => (dispatch) => {
+  return new Promise((resolve, reject) => {
+    fetch('http://localhost:8000/api/orders-by-user', {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    })
+    .then(response => response.json())
+    .then(response => {
+      resolve(response)
+    })
+    .catch(error => console.log(error))
+  });
+};
