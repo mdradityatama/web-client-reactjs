@@ -1,11 +1,11 @@
 import React, { Component, Fragment } from "react";
 import { connect } from "react-redux";
+import { Col, Container, Row } from "react-bootstrap";
 
 import { isAuthentication, getProductsAPI } from '../config/redux/action';
 
 import Layout from '../components/Layout';
 import CardProduct from '../components/CardProduct';
-import { Row } from "react-bootstrap";
 
 class Home extends Component {
   state = {
@@ -14,7 +14,7 @@ class Home extends Component {
 
   async componentDidMount()  {
     const { history } = this.props;
-    
+  
     const currentUser = JSON.parse(localStorage.getItem('currentUser'));
 
     if (currentUser != null) {
@@ -43,26 +43,32 @@ class Home extends Component {
     const { products } = this.state
 
     return(
-      <Layout props={this.props}>
-        <h2 className="text-center">Products</h2>
-        
-        <Row>
-          {products.length > 0 ? (
-            <Fragment>
-              {products.map((product) => {
-                return (
-                  <CardProduct 
-                    id={product.id} 
-                    picture={product.picture} 
-                    name={product.name} 
-                    description={product.description} 
-                    />
-                )
-              })}
-            </Fragment>
-          ) : null} 
-        </Row>
-      </Layout>
+      <>
+        <Layout />
+        <Container>
+          <h2 className="text-center mb-5">Products</h2>
+          
+          <Row>
+            {products.length > 0 ? (
+              <>
+                {products.map((product) => {
+                  return (
+                    <Col lg={3} md={4} className="flex-wrap">
+                      <CardProduct 
+                        id={product.id} 
+                        picture={product.picture} 
+                        name={product.name} 
+                        description={product.description} 
+                        product={product}
+                        />
+                    </Col>
+                  )
+                })}
+              </>
+            ) : null} 
+          </Row>
+      </Container>
+      </>
     )
   }
 }

@@ -1,5 +1,5 @@
 import { Component } from "react";
-import { Card } from "react-bootstrap";
+import { Card, Container, Button } from "react-bootstrap";
 import { connect } from "react-redux";
 
 import { isAuthentication } from '../config/redux/action';
@@ -7,11 +7,7 @@ import { isAuthentication } from '../config/redux/action';
 import Layout from '../components/Layout';
 
 class Profile extends Component {
-  state = {
-    user: []
-  }
-
-  async componentDidMount()  {
+  componentDidMount()  {
     const { history } = this.props;
     
     const currentUser = JSON.parse(localStorage.getItem('currentUser'));
@@ -19,9 +15,7 @@ class Profile extends Component {
     if (currentUser != null) {
       
       this.props.isAuthentication(currentUser.token)
-        .then(response => {
-          this.loadProfile(response)
-        })
+        .then()
         .catch(error => {
           localStorage.removeItem('currentUser');
           history.push('/login');
@@ -32,32 +26,46 @@ class Profile extends Component {
     }
   }
 
-  loadProfile(data) {
-    this.setState({user: data})
-  }
-
   render() {
-    const { name, email, username, phone } = this.state.user
+    const logout = () => {
+      const { history } = this.props;
+  
+      localStorage.removeItem('currentUser');
+  
+      history.push('/login');
+    }
+
+    const { name, email, username, phone } = this.props.user
+    const { isAdmin } = this.props
+
     return(
-      <Layout>
-        <h2 className="text-center">Profile</h2>
-        <Card>
-          <Card.Body>
-            <ol>
-              <li>Name : {name}</li>
-              <li>Email : {email}</li>
-              <li>Username : {username}</li>
-              <li>Phone : {phone}</li>
-            </ol>
-          </Card.Body>
-        </Card>
-      </Layout>
+      <>
+        <Layout />
+        <Container>
+          <h2 className="text-center">Profile</h2>
+          
+          <Card>
+            <Card.Body>
+              <ol>
+                <li>Name : {name}</li>
+                <li>Email : {email}</li>
+                <li>Username : {username}</li>
+                <li>Phone : {phone}</li>
+                {isAdmin ? <li>Roles : Admin</li> : null}
+              </ol>
+
+              <Button onClick={logout}>Logout</Button>
+            </Card.Body>
+          </Card>
+        </Container>
+      </>
     )
   }
 }
 
 const reduxState = (state) => ({
-  user: state.user
+  user: state.user,
+  isAdmin : state.isAdmin
 });
 
 const reduxDispatch = (dispatch) => ({

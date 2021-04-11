@@ -22,6 +22,13 @@ export const isAuthentication = (data) => (dispatch) => {
           value: dataUser,
         })
 
+        if (response.is_admin) {
+          dispatch({
+            type: "CHANGE_ADMIN",
+            value: true,
+          })
+        }
+
         dispatch({
           type: "CHANGE_ISLOGIN",
           value: true,
@@ -130,3 +137,25 @@ export const getOrderByUserAPI = (token) => (dispatch) => {
     .catch(error => console.log(error))
   });
 };
+
+export const getAllOrdersAPI = (token) => (dispatch) => {
+  return new Promise((resolve, reject) => {
+    fetch('http://localhost:8000/api/orders', {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    })
+    .then(response => response.json())
+    .then(response => {
+      resolve(response)
+    })
+    .catch(error => console.log(error))
+  });
+};
+
+export const addProductToCart = (product) => (dispatch) => {
+  console.log(product);
+  
+  return 'berhasil ditambahkan';
+}

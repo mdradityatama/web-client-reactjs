@@ -1,14 +1,25 @@
 import { Card, Button } from "react-bootstrap";
+import { connect } from "react-redux";
 
-function CardProduct({ id, name, description, picture }) {
+import { addProductToCart } from '../config/redux/action';
 
-  const addProduct = e => {
-    console.log(`add ${e.target.id}`)
+function CardProduct({ id, name, description, picture, product }) {
+
+  const addProduct = data => {
+    console.log(data);
+
+    // this.props.addProductToCart()
   }
 
   return (
-    <Card style={{ width: '18rem' }} id={id} className="mr-3">
-      <Card.Img variant="top" src={picture} />
+    <Card id={id} className="mr-3 mb-3">
+      <div style={{
+        height: '200px', 
+        backgroundColor: '#eaeaea',
+        backgroundImage: `url(${picture})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center'
+      }}></div>
       <Card.Body>
         <Card.Title>{ name }</Card.Title>
         <Card.Text>
@@ -16,11 +27,19 @@ function CardProduct({ id, name, description, picture }) {
         </Card.Text>
         <Button 
           variant="primary"
-          onClick={addProduct}
+          onClick={addProduct(product)}
           >Add Product</Button>
       </Card.Body>
     </Card>
   )
 }
 
-export default CardProduct;
+const reduxState = (state) => ({
+  
+});
+
+const reduxDispatch = (dispatch) => ({
+  addProductToCart: (data) => dispatch(addProductToCart(data)),
+});
+
+export default connect(reduxState, reduxDispatch)(CardProduct);
